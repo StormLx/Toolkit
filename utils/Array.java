@@ -1,4 +1,3 @@
-package utils;
 public class Array{
     private static int maxValue = 0;
     private static int idx = 0;
