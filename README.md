@@ -1,2 +1,2 @@
 # Toolkit
-compilation of different useful tools
+A compilation of different useful tools
