@@ -5,21 +5,22 @@ public class Array{
 
     public Array(){}
 
-    public static int [] sortArray(int [] genArr) {
-        for(int i = 0;i<genArr.length;i++){
-            for (int j = i + 1; j < genArr.length; j++) {
-                if (genArr[i] > genArr[j]) {
-                    switch_pos = genArr[i];
-                    genArr[i] = genArr[j];
-                    genArr[j] = switch_pos;
+    // Method to sort an array;
+    public static int [] sortArray(int [] arr) { 
+        for(int i = 0;i<arr.length;i++){
+            for (int j = i + 1; j < arr.length; j++) {
+                if (arr[i] > arr[j]) {
+                    switch_pos = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = switch_pos;
                 }
             }
         }  
-        return genArr;  
+        return arr;  
     }
+    // Method to find the max value in an array;
     public static int findMaxInt(int [] arr){
-
-        for (int i = 0; i < arr.length; i++) {
+         for (int i = 0; i < arr.length; i++) {
             if (arr[i] > maxValue) {
                 maxValue = arr[i];
                 idx = i;
@@ -27,7 +28,7 @@ public class Array{
         }
         return maxValue;
     }
-
+    // Method to generate an array with random number;
     public static int[] genArray(int size) {
         int[] arr = new int[size];
         for (int i = 0; i < size; i++) {
@@ -36,7 +37,7 @@ public class Array{
         }
         return arr;
     }
-
+    // Method to print an array;
     public static void printArray(int[] arr) {
         String str = "";
         for (int i = 0; i < arr.length; i++) {
