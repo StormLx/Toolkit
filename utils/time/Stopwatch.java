@@ -2,23 +2,13 @@ package time;
 
 public class Stopwatch {
     
-    private long start, now;
+    private long start;
 
-    public Stopwatch(){}
-
-    public void start(){
+    public Stopwatch(){
         start = System.currentTimeMillis();
     }
-    public void stop(){
-        now = System.currentTimeMillis();
+    public double elapsedTime(){
+        long now = System.currentTimeMillis();
+        return (now - start) / 1000.0;
     }
-
-    public String toString(){
-        long delta = now - start;
-        long deltaS = delta / 1000;
-        long deltaMS = delta % 1000;
-        return deltaS + "." + String.format("%03d", deltaMS) + "s";
-    }
-
-
 }

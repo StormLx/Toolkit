@@ -1,13 +1,13 @@
 import time.*;
 public class Test {
     public static void main(String[] args) {
-        Time.print();
-        time.Stopwatch s = new time.Stopwatch();
         
-        s.start();      
-        Array.printArray(Array.genArray(1000));
-        s.stop();
-
-        System.out.println(s);
+        time.Stopwatch timer1 = new time.Stopwatch();
+        int [] arr =  Array.genArray(1000);
+        Array.printArray(arr);
+        double time1 = timer1.elapsedTime();
+        System.out.printf("Elapsed time to generate this array: %1.3fs%n", time1);
+        Time.print();
+        Time.printFR();
     }
 }
