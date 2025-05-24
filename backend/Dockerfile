@@ -12,12 +12,8 @@ RUN ./mvnw dependency:go-offline
 # Copy the rest of the application code
 COPY src ./src
 
-# Package the application (without running tests for faster build in dev)
-# Spring Boot DevTools will be included, enabling hot reload
-RUN ./mvnw package -DskipTests
+# Expose the application port and debug port
+EXPOSE 8080 5005
 
-# Expose the application port
-EXPOSE 8080
-
-# Run the application
-CMD ["java", "-jar", "target/*.jar"]
+# Run with Maven for hot reload support
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]

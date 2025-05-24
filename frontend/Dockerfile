@@ -1,18 +1,19 @@
-# Stage 1: Build the application
-FROM node:18 AS build
+# Development Dockerfile for Angular
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Install Angular CLI globally (if needed for ng serve, though package.json scripts are preferred)
-# RUN npm install -g @angular/cli
-
+# Copy package files
 COPY package*.json ./
-RUN npm install
 
+# Install dependencies
+RUN npm ci
+
+# Copy the rest of the application
 COPY . .
 
-# Expose port for Angular live server
+# Expose the Angular dev server port
 EXPOSE 4200
 
-# Start the Angular development server
-CMD ["npm", "start"]
+# Run the Angular development server
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll=2000"]
