@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Spring Boot app
+      - "5005:5005" # Debug port (optional)
+    volumes:
+      - ./backend/src:/app/src # Hot reload for backend source
+      # If Maven wrapper or pom.xml changes, you'd need to rebuild the image
+      # or mount .m2 directory for local maven repo caching (advanced)
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/appdb
+      - SPRING_DATASOURCE_USERNAME=appuser
+      - SPRING_DATASOURCE_PASSWORD=appsecret
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml
+      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth # Keycloak internal URL
+      - KEYCLOAK_REALM=my-app-realm
+      - KEYCLOAK_RESOURCE=my-backend-client
+      # - KEYCLOAK_CREDENTIALS_SECRET=YOUR_BACKEND_CLIENT_SECRET # Set this if backend client is confidential
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://localhost:8180/auth/realms/my-app-realm # External URL for Spring Security
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=my-backend-client
+      # - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_SECRET=YOUR_BACKEND_CLIENT_SECRET
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200" # Angular app
+    volumes:
+      - ./frontend/src:/app/src # Hot reload for frontend source
+      - ./frontend/public:/app/public # For static assets if any in public
+      # Mount node_modules as a volume to prevent it from being overwritten by the host's node_modules (if any)
+      # and to persist node_modules between container restarts if you run npm install inside the container.
+      # However, for development, it's often better to rely on the node_modules installed during the image build.
+      # If you face issues with node_modules, you might need a named volume:
+      # - node_modules_volume:/app/node_modules
+    environment:
+      # These are build-time arguments for Angular, not directly used by ng serve this way.
+      # For runtime env vars in Angular, specific techniques are needed (e.g., writing to a config file at container start).
+      # For now, the placeholders in auth.config.ts will be replaced manually or via a script during/after build.
+      # We will rely on the placeholders in auth.config.ts and assume they will be updated or a more dynamic config solution implemented.
+      - KEYCLOAK_AUTH_SERVER_URL_PLACEHOLDER=http://localhost:8180/auth # External URL for frontend
+      - KEYCLOAK_REALM_PLACEHOLDER=my-app-realm
+      - KEYCLOAK_FRONTEND_CLIENT_ID_PLACEHOLDER=my-frontend-client
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=appdb
+      - POSTGRES_USER=appuser
+      - POSTGRES_PASSWORD=appsecret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1 # Use a specific version
+    ports:
+      - "8180:8080" # Keycloak admin console and auth endpoints (external)
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=db
+      - KC_DB_URL_DATABASE=appdb # Keycloak can use the same DB, different schema, or a dedicated one
+      - KC_DB_USERNAME=appuser
+      - KC_DB_PASSWORD=appsecret
+      - KC_DB_SCHEMA=keycloak # Use a dedicated schema for Keycloak tables
+      - KC_HEALTH_ENABLED=true
+      - KC_HTTP_RELATIVE_PATH=/auth # This makes Keycloak accessible at /auth path
+      # To import a realm on startup:
+      # - KEYCLOAK_IMPORT=/opt/keycloak/data/import/realm-export.json
+      # - Mount your realm file: - ./config/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    volumes:
+      - ./config/keycloak:/opt/keycloak/data/import # Mount our realm config for potential import
+      # - keycloak_data:/opt/keycloak/data # For persistent Keycloak data if not using external DB fully
+    command: start-dev # Use 'start' for production with --optimized flag if needed
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/auth/health/ready || exit 1"] # Internal port
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  # node_modules_volume: # Uncomment if you chose the named volume strategy for frontend node_modules
+
+networks:
+  app-network:
+    driver: bridge
