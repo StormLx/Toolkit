@@ -18,14 +18,14 @@ services:
       - KEYCLOAK_REALM=my-app-realm
       - KEYCLOAK_RESOURCE=my-backend-client
       # - KEYCLOAK_CREDENTIALS_SECRET=YOUR_BACKEND_CLIENT_SECRET # Set this if backend client is confidential
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://localhost:8180/realms/my-app-realm # External URL for Spring Security (no /auth in v22)
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/my-app-realm # External URL for Spring Security (no /auth in v22)
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=my-backend-client
       # - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_SECRET=YOUR_BACKEND_CLIENT_SECRET
     depends_on:
       db:
         condition: service_healthy
       keycloak:
-        condition: service_healthy
+        condition: service_started  # Changed to service_started since health check might not work in dev mode
     networks:
       - app-network
 
@@ -87,12 +87,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10 # Increased retries as Keycloak can take time to start
-      start_period: 30s # Give Keycloak time to start before checking health
+    # Note: In dev mode, health endpoints might not be available on the same port
+    # The documentation mentions health is available on management port, not the main port
     networks:
       - app-network
 
