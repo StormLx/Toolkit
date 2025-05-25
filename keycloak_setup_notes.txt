@@ -1,0 +1,17 @@
+Keycloak Configuration Notes:
+
+1.  The Keycloak service will be started via Docker Compose.
+2.  On first startup, or if `config/keycloak/realm-export.json` is not automatically imported, you may need to:
+    - Log in to the Keycloak admin console (default: http://localhost:8180, user/pass from docker-compose env).
+    - Create a new Realm (e.g., 'my-app-realm').
+    - Create a client for the Spring Boot backend (e.g., 'my-backend-client').
+        - Set Access Type: confidential (if using a secret) or bearer-only.
+        - (If confidential) Note the secret.
+        - Configure Service Accounts if backend needs to communicate with Keycloak directly.
+    - Create a client for the Angular frontend (e.g., 'my-frontend-client').
+        - Set Access Type: public.
+        - Configure Valid Redirect URIs (e.g., http://localhost:4200/*, http://localhost:4200/silent-check-sso.html).
+        - Configure Web Origins (e.g., '+', or http://localhost:4200).
+    - Create users within the realm.
+3.  The `realm-export.json` in `config/keycloak` is a placeholder. For a production setup, this should contain the full realm configuration for automated import if supported by the Keycloak Docker image version used.
+4.  Update `backend/src/main/resources/application.properties` and `frontend/src/app/core/auth/auth.config.ts` (or environment variables in docker-compose) with the correct Keycloak server URL, realm, and client IDs/secrets.

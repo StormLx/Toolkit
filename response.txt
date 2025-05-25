@@ -1,0 +1,1 @@
+{"timestamp":"2025-05-24T14:59:30.035+00:00","status":400,"error":"Bad Request","message":"Invalid Spring Boot version '3.2.2', Spring Boot compatibility range is >=3.3.0","path":"/starter.zip"}

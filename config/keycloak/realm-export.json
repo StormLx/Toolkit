@@ -1,0 +1,21 @@
+{
+  "realm": "my-app-realm",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "my-backend-client",
+      "secret": "GENERATED_SECRET_PLACEHOLDER",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true
+    },
+    {
+      "clientId": "my-frontend-client",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:4200/*"],
+      "webOrigins": ["+"]
+    }
+  ]
+}
