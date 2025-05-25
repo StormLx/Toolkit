@@ -1,20 +1,25 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router'; // Import Router
-import { CommonModule } from '@angular/common'; // Import CommonModule
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../core/services/auth.service'; // Correct path
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Add CommonModule and FormsModule
+  imports: [CommonModule, FormsModule], // FormsModule if you add ngModel for username
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  constructor(private router: Router) {} // Inject Router
+  // Optional: if you want a username field
+  // loginData = { username: '', password: '' };
+
+  constructor(private authService: AuthService, private router: Router /* Router might no longer be needed here if AuthService handles all navigation */) {}
 
   login(): void {
-    // For now, just navigate to the home page
-    this.router.navigate(['/home']);
+    // If using loginData: this.authService.login(this.loginData.username);
+    this.authService.login('TestUser'); // Using a hardcoded username
+    // Navigation is now handled by AuthService.login()
   }
 }

@@ -1,0 +1,11 @@
+:host {
+  display: block; /* Important for standalone components */
+}
+.footer-container {
+  padding: 15px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 0.9em;
+}

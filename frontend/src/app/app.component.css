@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-area {
+  flex-grow: 1;
+  /* You might want to add other styles here if needed,
+     e.g., padding, or if it needs to be a flex container itself */
+  display: flex; /* Optional: if router-outlet content needs flex context */
+  flex-direction: column; /* Optional: if router-outlet content needs flex context */
+}
+
+/* Ensure app-header and app-footer are not flex items of the :host's column flex,
+   but rather direct children that take their natural height.
+   This is usually the default behavior unless they have specific flex properties. */
