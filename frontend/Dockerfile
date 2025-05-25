@@ -11,8 +11,8 @@ RUN npm ci
 
 # Copy, set permissions for entrypoint script, and verify
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
 RUN ls -la /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Copy the rest of the application
 COPY . .
@@ -21,6 +21,6 @@ COPY . .
 EXPOSE 4200
 
 # Set the entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
 # Default command for the entrypoint
 CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll=2000"]
