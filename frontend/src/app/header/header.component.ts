@@ -1,26 +1,43 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common'; // AsyncPipe, *ngIf
-import { Router } from '@angular/router';
-import { AuthService } from "../core/services/auth.service";
+import { Component, OnInit, inject } from '@angular/core'; // Added OnInit
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; // Keep if login button navigates explicitly
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule],
+  // standalone: true, // Already removed in a previous step
+  imports: [CommonModule], // RouterLink if used in template
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-  private authService = inject(AuthService);
-  private router = inject(Router);
+export class HeaderComponent implements OnInit {
+  keycloakService = inject(KeycloakService);
+  router = inject(Router); // For login button navigation if needed
 
-  isAuthenticated$ = this.authService.isAuthenticated$;
-  username$ = this.authService.username$;
+  isLoggedIn: boolean = false;
+  username: string | null = null;
+
+  async ngOnInit(): Promise<void> {
+    this.isLoggedIn = await this.keycloakService.isLoggedIn();
+    if (this.isLoggedIn) {
+      try {
+        const userProfile = await this.keycloakService.loadUserProfile();
+        this.username = userProfile.username || userProfile.email || 'Authenticated User';
+      } catch (e) {
+        console.error('Error loading user profile', e);
+        this.username = 'Authenticated User'; // Fallback
+      }
+    }
+  }
 
   login(): void {
-    this.router.navigate(['/login']);
+    this.keycloakService.login();
+    // Or, if you want to navigate to a specific login route first (less common with Keycloak directly):
+    // this.router.navigate(['/login']);
   }
 
   logout(): void {
-    this.authService.logout();
+    // Redirect to the login page after logout, assuming it's at '/login' relative to origin
+    this.keycloakService.logout(window.location.origin + '/login');
   }
 }
