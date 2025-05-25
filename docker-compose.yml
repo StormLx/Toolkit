@@ -39,9 +39,9 @@ services:
       - ./frontend/src:/app/src # Hot reload for frontend source
       - ./frontend/public:/app/public # For static assets if any in public
     environment:
-      - KEYCLOAK_AUTH_SERVER_URL_PLACEHOLDER=http://localhost:8180 # External URL for frontend (no /auth in v22)
-      - KEYCLOAK_REALM_PLACEHOLDER=my-app-realm
-      - KEYCLOAK_FRONTEND_CLIENT_ID_PLACEHOLDER=my-frontend-client
+      - KEYCLOAK_AUTH_SERVER_URL=http://localhost:8180 # External URL for frontend (no /auth in v22)
+      - KEYCLOAK_REALM=my-app-realm
+      - KEYCLOAK_FRONTEND_CLIENT_ID=my-frontend-client
     depends_on:
       - backend
     networks:
