@@ -1,24 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common'; // AsyncPipe, *ngIf
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthService } from '../../core/services/auth.service'; // Correct path
+import { AuthService } from "../core/services/auth.service";
 
 @Component({
   selector: 'app-header',
-  standalone: true,
-  imports: [CommonModule], // CommonModule provides AsyncPipe and *ngIf
+  imports: [CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  isAuthenticated$: Observable<boolean>;
-  username$: Observable<string | null>;
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private authService: AuthService, private router: Router) {
-    this.isAuthenticated$ = this.authService.isAuthenticated$;
-    this.username$ = this.authService.username$;
-  }
+  isAuthenticated$ = this.authService.isAuthenticated$;
+  username$ = this.authService.username$;
 
   login(): void {
     this.router.navigate(['/login']);

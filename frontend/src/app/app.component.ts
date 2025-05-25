@@ -8,9 +8,9 @@ import { filter } from 'rxjs/operators'; // Import filter operator
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent], // Add CommonModule, HeaderComponent, FooterComponent
+  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'] // Corrected from styleUrl to styleUrls
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'frontend';
