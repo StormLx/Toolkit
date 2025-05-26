@@ -7,25 +7,23 @@ services:
       - "8080:8080" # Spring Boot app
       - "5005:5005" # Debug port (optional)
     volumes:
-      - ./backend/src:/app/src # Hot reload for backend source
+      - ./backend/src:/app/src
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/appdb
       - SPRING_DATASOURCE_USERNAME=appuser
       - SPRING_DATASOURCE_PASSWORD=appsecret
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml
-      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080 # Keycloak internal URL (no /auth in v22)
+      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080
       - KEYCLOAK_REALM=my-app-realm
       - KEYCLOAK_RESOURCE=my-backend-client
-      # - KEYCLOAK_CREDENTIALS_SECRET=YOUR_BACKEND_CLIENT_SECRET # Set this if backend client is confidential
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/my-app-realm # External URL for Spring Security (no /auth in v22)
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/my-app-realm
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=my-backend-client
-      # - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_SECRET=YOUR_BACKEND_CLIENT_SECRET
     depends_on:
       db:
         condition: service_healthy
       keycloak:
-        condition: service_started  # Changed to service_started since health check might not work in dev mode
+        condition: service_started
     networks:
       - app-network
 
@@ -34,12 +32,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "4200:4200" # Angular app
+      - "4200:4200"
     volumes:
-      - ./frontend/src:/app/src # Hot reload for frontend source
+      - ./frontend/src:/app/src
       - ./frontend/public:/app/public # For static assets if any in public
     environment:
-      - KEYCLOAK_AUTH_SERVER_URL=http://localhost:8180 # External URL for frontend (no /auth in v22)
+      - KEYCLOAK_AUTH_SERVER_URL=http://localhost:8180
       - KEYCLOAK_REALM=my-app-realm
       - KEYCLOAK_FRONTEND_CLIENT_ID=my-frontend-client
     depends_on:
@@ -84,15 +82,12 @@ services:
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
       - KC_HTTP_RELATIVE_PATH=/
-      # KC_HTTP_RELATIVE_PATH is removed in v22, paths are now at root level
     volumes:
-      - ./config/keycloak:/opt/keycloak/data/import # Mount our realm config for potential import
+      - ./config/keycloak:/opt/keycloak/data/import
     command: start-dev # Use 'start' for production
     depends_on:
       db:
         condition: service_healthy
-    # Note: In dev mode, health endpoints might not be available on the same port
-    # The documentation mentions health is available on management port, not the main port
     networks:
       - app-network
 
