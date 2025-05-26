@@ -1,0 +1,13 @@
+<div class="header-container">
+  <div class="app-name">
+    <span>My App</span>
+  </div>
+  <div class="user-info" *ngIf="isLoggedIn">
+    <span class="icon">[ICON]</span> <!-- Placeholder for icon -->
+    <span>Hello, {{ username }}</span>
+    <button (click)="logout()">Logout</button>
+  </div>
+  <div class="user-info" *ngIf="!isLoggedIn">
+    <button (click)="login()">Login</button>
+  </div>
+</div>
