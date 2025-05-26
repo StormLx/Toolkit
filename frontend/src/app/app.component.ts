@@ -7,7 +7,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  // standalone: true, // REMOVED
+  standalone: true, // Ensure this is set to true
   imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -16,9 +16,9 @@ export class AppComponent {
   title = 'frontend';
   shouldShowHeaderFooter: boolean = false;
 
-  router = inject(Router); // CHANGED
+  readonly router = inject(Router); // Add readonly
 
-  constructor() { // MODIFIED constructor
+  constructor() {
     this.router.events.pipe(
       filter((event: RouterEvent): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
