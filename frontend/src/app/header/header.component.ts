@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
+import  { KeycloakProfile } from 'keycloak-js';
+import Keycloak from "keycloak-js";
 
 @Component({
   selector: 'app-header',
@@ -14,7 +14,7 @@ import { KeycloakProfile } from 'keycloak-js';
 })
 export class HeaderComponent implements OnInit {
   // Dependency Injections
-  private readonly keycloakService = inject(KeycloakService);
+  private readonly keycloak = inject(Keycloak);
   private readonly router = inject(Router);
 
   // State
@@ -32,7 +32,8 @@ export class HeaderComponent implements OnInit {
   // Lifecycle Hooks
   async ngOnInit(): Promise<void> {
     try {
-      const loggedIn = await this.keycloakService.isLoggedIn();
+      const userProfile = await this.keycloak.loadUserProfile();
+      const loggedIn = !!(await userProfile.username);
       this._isLoggedIn.set(loggedIn);
 
       if (loggedIn) {
@@ -46,7 +47,7 @@ export class HeaderComponent implements OnInit {
   // Private Methods
   private async loadUserProfile(): Promise<void> {
     try {
-      const userProfile = await this.keycloakService.loadUserProfile();
+      const userProfile = await this.keycloak.loadUserProfile();
       this._userProfile.set(userProfile);
     } catch (error) {
       console.error('Error loading user profile:', error);
@@ -58,7 +59,7 @@ export class HeaderComponent implements OnInit {
   // Public Methods
   async login(): Promise<void> {
     try {
-      await this.keycloakService.login({
+      await this.keycloak.login({
         redirectUri: window.location.origin + this.router.url
       });
     } catch (error) {
@@ -69,7 +70,8 @@ export class HeaderComponent implements OnInit {
   async logout(): Promise<void> {
     try {
       const logoutUrl = `${window.location.origin}/login`;
-      await this.keycloakService.logout(logoutUrl);
+      console.log(logoutUrl)
+      await this.keycloak.logout({redirectUri: logoutUrl});
     } catch (error) {
       console.error('Logout error:', error);
     }

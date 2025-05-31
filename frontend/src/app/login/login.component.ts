@@ -1,19 +1,24 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms'; // REMOVED
-import { KeycloakService } from 'keycloak-angular';
+import  Keycloak  from 'keycloak-js';
 
 @Component({
   selector: 'app-login',
-  // standalone: true, // Already removed
-  imports: [CommonModule], // FormsModule REMOVED
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  keycloakService = inject(KeycloakService);
+  private readonly keycloak = inject(Keycloak);
 
-  login(): void {
-    this.keycloakService.login(); // Keycloak handles redirect
+  async login(): Promise<void> {
+    try {
+      await this.keycloak.login({
+        redirectUri: window.location.origin
+      });
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   }
 }

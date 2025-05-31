@@ -10,7 +10,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
         clientId: keycloakConfig.clientId,
       },
       initOptions: {
-        onLoad: 'check-sso', // Or 'login-required'
+        onLoad: 'check-sso',
         silentCheckSsoRedirectUri:
           window.location.origin + '/assets/silent-check-sso.html',
       },
