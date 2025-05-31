@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,7 +14,6 @@ import java.security.Principal;
 public class AuthenticatedController {
 
     @GetMapping("/")
-    @PreAuthorize("isAuthenticated()")
     public String getAuthenticatedMessage(@AuthenticationPrincipal Jwt jwt) {
         // Preferred way: Use @AuthenticationPrincipal Jwt jwt to get full JWT details
         String username = jwt.getClaimAsString("preferred_username");
@@ -28,7 +26,6 @@ public class AuthenticatedController {
 
     // Alternative using Principal, which is more generic
     @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
     public String getMyInfo(Principal principal) {
         // The name from the Principal depends on the JwtAuthenticationToken configuration.
         // By default, it's often the 'sub' claim.
