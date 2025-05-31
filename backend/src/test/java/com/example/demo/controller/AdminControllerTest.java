@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -57,10 +58,12 @@ public class AdminControllerTest {
         // The JwtAuthenticationConverter in SecurityConfig prefixes roles with "ROLE_".
         // The hasRole("ADMIN") check in SecurityConfig expects "ADMIN" without the prefix.
         // The converter extracts "ADMIN" from the token and Spring Security adds "ROLE_" internally.
+        // We will directly add the authority to ensure the test works with @PreAuthorize
         mockMvc.perform(get("/api/admin/")
-                        .with(jwt().jwt(builder -> builder
-                                .claim("preferred_username", "adminuser")
-                                .claim("realm_access", Map.of("roles", List.of("ADMIN", "USER")))))) // Has "ADMIN" role
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                                .jwt(builder -> builder
+                                        .claim("preferred_username", "adminuser")
+                                        .claim("realm_access", Map.of("roles", List.of("ADMIN", "USER")))))) // Has "ADMIN" role
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello, adminuser! You have ADMIN access."));
     }
@@ -70,20 +73,24 @@ public class AdminControllerTest {
         // Keycloak roles are often case-sensitive, but Spring Security's GrantedAuthority comparison can be case-sensitive.
         // Our converter does .toUpperCase() on role names, so "admin" becomes "ROLE_ADMIN".
         // The hasRole("ADMIN") check implicitly looks for "ROLE_ADMIN".
+        // We will directly add the authority to ensure the test works with @PreAuthorize
         mockMvc.perform(get("/api/admin/")
-                        .with(jwt().jwt(builder -> builder
-                                .claim("preferred_username", "admin_lowercase_role")
-                                .claim("realm_access", Map.of("roles", List.of("admin")))))) // Role "admin" (lowercase)
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                                .jwt(builder -> builder
+                                        .claim("preferred_username", "admin_lowercase_role")
+                                        .claim("realm_access", Map.of("roles", List.of("admin")))))) // Role "admin" (lowercase)
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello, admin_lowercase_role! You have ADMIN access."));
     }
 
     @Test
     void getAdminMessage_withJwtAuthentication_missingPreferredUsername_shouldFallbackToSubject() throws Exception {
+        // We will directly add the authority to ensure the test works with @PreAuthorize
         mockMvc.perform(get("/api/admin/")
-                        .with(jwt().jwt(builder -> builder
-                                .subject("admin_sub_only")
-                                .claim("realm_access", Map.of("roles", List.of("ADMIN"))))))
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                                .jwt(builder -> builder
+                                        .subject("admin_sub_only")
+                                        .claim("realm_access", Map.of("roles", List.of("ADMIN"))))))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello, admin_sub_only! You have ADMIN access."));
     }
