@@ -23,7 +23,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     private final String REALM_ACCESS = "realm_access";
     private final String ROLES = "roles";
     private final String RESOURCE_ACCESS = "resource_access";
-    private final String CLIENT_ID = "carnet-client";
+    private final String CLIENT_ID = "my-app-client";
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {

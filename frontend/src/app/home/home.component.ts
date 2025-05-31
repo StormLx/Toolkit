@@ -4,7 +4,6 @@ import { HttpClient } from "@angular/common/http"; // Added inject
 
 @Component({
   selector: 'app-home',
-  // standalone: true, // REMOVED
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

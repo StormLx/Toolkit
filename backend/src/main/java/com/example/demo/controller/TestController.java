@@ -7,17 +7,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/admin")
-public class AdminController {
+import java.util.Map;
 
-    @GetMapping("/")
+@RestController
+@RequestMapping("/api")
+public class TestController {
+
+    @GetMapping("/public/test")
+    public String publicEndpoint() {
+        return "Public endpoint accessible";
+    }
+
+    @GetMapping("/admin/test")
     @PreAuthorize("hasRole('ADMIN')")
-    public String getAdminMessage(@AuthenticationPrincipal Jwt jwt) {
-        String username = jwt.getClaimAsString("preferred_username");
-        if (username == null) {
-            username = jwt.getSubject();
-        }
-        return "Hello, " + username + "! You have ADMIN access.";
+    public Map<String, Object> teacherEndpoint(@AuthenticationPrincipal Jwt jwt) {
+        return Map.of(
+                "message", "Admin authentifié",
+                "username", jwt.getClaimAsString("preferred_username")
+        );
     }
 }

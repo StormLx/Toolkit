@@ -1,0 +1,70 @@
+/* login.page.scss */
+.login-content {
+  height: 100%;
+}
+
+.login-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+.login-card {
+  background-color: var(--ion-card-background);
+  border-radius: var(--ion-card-border-radius, 12px);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--ion-card-box-shadow);
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: 2rem;
+  }
+}
+
+.login-button {
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 16px;
+  height: 50px;
+}
+
+.school-info {
+  margin-top: 2rem;
+
+  p {
+    margin: 0.2rem 0;
+    font-size: 14px;
+  }
+}
+
+// Responsive adjustments for tablets and larger screens
+@media (min-height: 800px) {
+  .logo-container {
+    margin-top: 4rem;
+
+    .app-logo {
+      width: 150px;
+      height: 150px;
+    }
+
+    h1 {
+      font-size: 28px;
+    }
+  }
+
+  .login-card {
+    padding: 2.5rem;
+  }
+}

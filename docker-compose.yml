@@ -4,21 +4,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8080:8080" # Spring Boot app
+      - "8081:8081" # Spring Boot app
       - "5005:5005" # Debug port (optional)
     volumes:
       - ./backend/src:/app/src
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/appdb
-      - SPRING_DATASOURCE_USERNAME=appuser
-      - SPRING_DATASOURCE_PASSWORD=appsecret
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
-      - SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml
-      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080
-      - KEYCLOAK_REALM=my-app-realm
-      - KEYCLOAK_RESOURCE=my-backend-client
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/my-app-realm
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=my-backend-client
     depends_on:
       db:
         condition: service_healthy
@@ -36,10 +25,6 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public # For static assets if any in public
-    environment:
-      - KEYCLOAK_AUTH_SERVER_URL=http://localhost:8180
-      - KEYCLOAK_REALM=my-app-realm
-      - KEYCLOAK_FRONTEND_CLIENT_ID=my-frontend-client
     depends_on:
       - backend
     networks:
@@ -55,7 +40,7 @@ services:
       - POSTGRES_PASSWORD=appsecret
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql # Initialize schema
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
       interval: 10s
@@ -65,9 +50,9 @@ services:
       - app-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:22.0.1
+    image: quay.io/keycloak/keycloak:24.0
     ports:
-      - "8180:8080" # Keycloak admin console and auth endpoints (external)
+      - "8080:8080"
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
@@ -79,12 +64,9 @@ services:
       - KC_DB_SCHEMA=keycloak
       - KC_HEALTH_ENABLED=true
       - KC_HTTP_ENABLED=true
-      - KC_HOSTNAME_STRICT=false
-      - KC_HOSTNAME_STRICT_HTTPS=false
-      - KC_HTTP_RELATIVE_PATH=/
     volumes:
       - ./config/keycloak:/opt/keycloak/data/import
-    command: start-dev # Use 'start' for production
+    command: start-dev
     depends_on:
       db:
         condition: service_healthy
