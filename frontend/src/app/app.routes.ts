@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from "./login/login.component";
+import { inject } from "@angular/core";
+import Keycloak from "keycloak-js";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'home', component: HomeComponent }
+  { path: 'home',
+    loadComponent: () => import('./home/home.component').then(c => c.HomeComponent),
+    canActivate: [() => inject(Keycloak).authenticated]
+  }
 ];

@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       const userProfile = await this.keycloak.loadUserProfile();
-      const loggedIn = !!(await userProfile.username);
+      const loggedIn = !!this.keycloak.authenticated;
       this._isLoggedIn.set(loggedIn);
 
       if (loggedIn) {
