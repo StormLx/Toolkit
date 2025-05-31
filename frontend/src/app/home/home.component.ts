@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { HttpClient } from "@angular/common/http"; // Added inject
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../environments/environment"; // Added inject
 // No services are currently injected here, but adding inject for consistency if needed later
 
 @Component({
@@ -8,10 +9,5 @@ import { HttpClient } from "@angular/common/http"; // Added inject
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-
-
-  constructor() {
-    inject(HttpClient).get('http://localhost:8080/api/public/msg').subscribe(data => {})
-  }
 
 }
