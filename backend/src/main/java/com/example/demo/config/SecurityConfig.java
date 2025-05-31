@@ -3,6 +3,7 @@ package com.example.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -27,12 +29,6 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // Enable CORS with default configuration
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/authenticated/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // Configure OAuth2 Resource Server with JWT
 
         return http.build();
