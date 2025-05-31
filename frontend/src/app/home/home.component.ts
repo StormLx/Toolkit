@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core'; // Added inject
+import { Component, inject } from '@angular/core';
+import { HttpClient } from "@angular/common/http"; // Added inject
 // No services are currently injected here, but adding inject for consistency if needed later
 
 @Component({
@@ -8,9 +9,10 @@ import { Component, inject } from '@angular/core'; // Added inject
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  // Example if a service were injected:
-  // myService = inject(MyService);
 
-  constructor() { } // Constructor can be removed if empty
+
+  constructor() {
+    inject(HttpClient).get('http://localhost:8080/api/public/msg').subscribe(data => {})
+  }
 
 }
