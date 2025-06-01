@@ -1,0 +1,12 @@
+<div class="header-container">
+    <div class="app-name">
+        <span>My App</span>
+    </div>
+    @if(auth.isAuthenticated()) {
+        <div class="user-info">
+            <span class="icon">👤</span>
+            <span>Hello, {{ auth.getUsername() }}</span>
+            <button  class="logout-btn" (click)="logout()">Logout</button>
+        </div>
+    }
+</div>

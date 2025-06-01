@@ -4,7 +4,7 @@ import { isAuthenticatedGuard } from "./core/guards/auth.guard";
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home',
-    loadComponent: () => import('./home/home.component').then(c => c.HomeComponent),
+    loadComponent: () => import('./features/home/home.component').then(c => c.HomeComponent),
     canActivate: [isAuthenticatedGuard],
   },
   {
