@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { authConfig } from "../../../../auth.config";
+import { authConfig } from "./auth.config";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    constructor(private oauthService: OAuthService) {}
+
+  private readonly oauthService = inject(OAuthService);
 
     async initAuth(): Promise<void> {
         this.oauthService.configure(authConfig);
@@ -24,9 +25,9 @@ export class AuthService {
         this.oauthService.logOut();
     }
 
-    getUsername(): string {
-        const claims = this.oauthService.getIdentityClaims() as any;
-        return claims ? claims.preferred_username : null;
+    getUsername(): string | null {
+        const claims = this.oauthService.getIdentityClaims();
+        return claims['preferred_username'] || null;
     }
 
     getRoles(): string[] {
