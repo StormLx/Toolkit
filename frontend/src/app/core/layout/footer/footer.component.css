@@ -1,6 +1,7 @@
 :host {
   display: block; /* Important for standalone components */
 }
+
 .footer-container {
   padding: 15px;
   background-color: #333;

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AuthService } from "../../auth/auth.service";
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AuthService} from "../../auth/auth.service";
 
 @Component({
   selector: 'app-header',
@@ -10,9 +10,9 @@ import { AuthService } from "../../auth/auth.service";
   styleUrls: ['./header.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent  {
+export class HeaderComponent {
 
-  auth = inject(AuthService);
+  protected readonly auth = inject(AuthService);
 
   login() {
     this.auth.login();

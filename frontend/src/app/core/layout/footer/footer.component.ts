@@ -1,17 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core'; // Ensure inject is imported
-import { CommonModule } from '@angular/common'; // Import CommonModule
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-footer',
-  standalone: true, // Add
-  imports: [CommonModule], // Add (or ensure it's there)
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush // Add
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent {
-  // Example if a service were injected:
-  // private readonly myService = inject(MyService);
 
-  // Constructor has been removed
 }

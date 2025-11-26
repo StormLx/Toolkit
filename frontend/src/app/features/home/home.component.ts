@@ -1,7 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment"; // Added inject
-// No services are currently injected here, but adding inject for consistency if needed later
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-home',
