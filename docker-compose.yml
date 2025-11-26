@@ -66,7 +66,7 @@ services:
       - KC_HTTP_ENABLED=true
     volumes:
       - ./config/keycloak:/opt/keycloak/data/import
-    command: start-dev
+    command: start-dev --import-realm
     depends_on:
       db:
         condition: service_healthy
